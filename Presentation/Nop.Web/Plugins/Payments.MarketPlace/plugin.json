@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "MarketPlace Pay",
+  "SystemName": "Payments.MarketPlace",
+  "Version": "1.10",
+  "SupportedVersions": [ "4.10" ],
+  "Author": "Chams Developer Team",
+  "DisplayOrder": 1,
+  "FileName": "Chams.Plugin.Payments.MarketPlace.dll",
+  "Description": "This plugin provides a third party redirect payment gateway for Capdan MarketPlace."
+}

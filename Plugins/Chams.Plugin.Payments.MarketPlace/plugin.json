@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "MarketPlace Pay",
+  "SystemName": "Payments.MarketPlace",
+  "Version": "1.43",
+  "SupportedVersions": [ "4.10" ],
+  "Author": "Chams Developer team",
+  "DisplayOrder": 1,
+  "FileName": "Chams.Plugin.Payments.MarketPlace.dll",
+  "Description": "This plugin redirects payments to Chams Switch payment gateway."
+}

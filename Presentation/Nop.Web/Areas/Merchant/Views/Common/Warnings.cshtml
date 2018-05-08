@@ -1,0 +1,61 @@
+@model IList<SystemWarningModel>
+
+@{
+    //page title
+    ViewBag.Title = T("Merchant.System.Warnings").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Warnings");
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @T("Merchant.System.Warnings")
+    </h1>
+    <div class="pull-right">
+        &nbsp;
+        @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.WarningsButtons })
+    </div>
+</div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.WarningsTop })
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @foreach (var warning in Model)
+                    {
+                        switch (warning.Level)
+                        {
+                            case SystemWarningLevel.Pass:
+                                {
+                                    <p class="text-green">
+                                        <i class="icon fa fa-check"></i>
+                                        @warning.Text
+                                    </p>
+                                }
+                                break;
+                            case SystemWarningLevel.Warning:
+                                {
+                                    <p class="text-yellow">
+                                        <i class="icon fa fa-warning"></i>
+                                        @warning.Text
+                                    </p>
+                                }
+                                break;
+                            case SystemWarningLevel.Fail:
+                                {
+                                    <p class="text-red">
+                                        <i class="icon fa fa-ban"></i>
+                                        @warning.Text
+                                    </p>
+                                }
+                                break;
+                        }
+                    }
+                </div>
+            </div>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.WarningsBottom })
+        </div>
+    </div>
+</div>

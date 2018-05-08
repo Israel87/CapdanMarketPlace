@@ -1,0 +1,127 @@
+@model CountryModel
+
+<div class="panel-group">
+    @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.CountryDetailsStatesTop, additionalData = Model })
+    <div class="panel panel-default">
+        @if (Model.Id > 0)
+        {
+            <div class="panel-body">
+                <div id="states-grid"></div>
+
+                <script>
+                    $(document).ready(function () {
+                        $("#states-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("States", "Country", new { countryId = Model.Id }))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    },
+                                    destroy: {
+                                        url: "@Html.Raw(Url.Action("StateDelete", "Country"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors",
+                                    model: {
+                                        id: "Id"
+                                    }
+                                },
+                                error: function (e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            },
+                            pageable: {
+                                refresh: true,
+                                numeric: false,
+                                previousNext: false,
+                                info: false,
+                                @await Html.PartialAsync("_GridPagerMessages")
+                            },
+                            editable: {
+                                confirmation: "@T("Merchant.Common.DeleteConfirmation")",
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            columns: [{
+                                field: "Name",
+                                title: "@T("Merchant.Configuration.Countries.States.Fields.Name")",
+                                width: 300
+                            }, {
+                                field: "Abbreviation",
+                                title: "@T("Merchant.Configuration.Countries.States.Fields.Abbreviation")",
+                                width: 150
+                            }, {
+                                field: "Published",
+                                title: "@T("Merchant.Configuration.Countries.States.Fields.Published")",
+                                width: 100,
+                                headerAttributes: { style: "text-align:center" },
+                                attributes: { style: "text-align:center" },
+                                template: '# if(Published) {# <i class="fa fa-check true-icon"></i> #} else {# <i class="fa fa-close false-icon"></i> #} #'
+                            }, {
+                                field: "DisplayOrder",
+                                title: "@T("Merchant.Configuration.Countries.States.Fields.DisplayOrder")",
+                                width: 100
+                            }, {
+                                field: "Id",
+                                title: "@T("Merchant.Common.Edit")",
+                                headerAttributes: { style: "text-align:center" },
+                                attributes: { style: "text-align:center" },
+                                width: 100,
+                                template: "<button onclick=\"javascript:OpenWindow('@Url.Content("~/Merchant/Country/StateEditPopup/")#=Id#?btnId=btnRefresh&formId=country-form', 800, 450, true); return false;\" class='btn btn-default'><i class=\"fa fa-pencil\"></i>@T("Merchant.Common.Edit")</button>"
+                            }, {
+                                command: { name: "destroy", text: "@T("Merchant.Common.Delete")" },
+                                title: "@T("Merchant.Common.Delete")",
+                                headerAttributes: { style: "text-align:center" },
+                                attributes: { style: "text-align:center" },
+                                width: 100
+                            }]
+                        });
+                    });
+                </script>
+            </div>
+            <div class="panel-footer">
+                <div width="100%">
+                    <button type="submit" id="btnAddNewState"
+                            onclick="javascript:OpenWindow('@(Url.Action("StateCreatePopup", "Country", new {countryId = Model.Id, btnId = "btnRefresh", formId = "country-form"}))', 800, 450, true); return false;"
+                            class="btn btn-primary">
+                        @T("Merchant.Configuration.Countries.States.AddNew")
+                    </button>
+                    <input type="submit" id="btnRefresh" style="display: none" />
+                    <script>
+                        $(document).ready(function () {
+                            $('#btnRefresh').click(function () {
+                                //refresh grid
+                                var grid = $("#states-grid").data('kendoGrid');
+                                grid.dataSource.read();
+
+                                //return false to don't reload a page
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="panel-body">
+                @T("Merchant.Configuration.Countries.States.SaveBeforeEdit")
+            </div>
+        }
+    </div>
+    @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.CountryDetailsStatesBottom, additionalData = Model })
+</div>

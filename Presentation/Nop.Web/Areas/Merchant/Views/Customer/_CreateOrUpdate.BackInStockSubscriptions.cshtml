@@ -1,0 +1,77 @@
+﻿@model CustomerModel
+@using Nop.Services.Stores
+@inject MerchantAreaSettings MerchantAreaSettings
+@inject IStoreService storeService
+@{
+    var defaultGridPageSize = MerchantAreaSettings.DefaultGridPageSize;
+    var gridPageSizes = MerchantAreaSettings.GridPageSizes;
+    var stores = storeService.GetAllStores();
+}
+
+<div class="panel-group">
+    @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.CustomerDetailsBackInStockTop, additionalData = Model })
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div id="backinstock-subscriptions-grid"></div>
+            <script>
+                $(document).ready(function () {
+                    $("#backinstock-subscriptions-grid").kendoGrid({
+                        dataSource: {
+                            type: "json",
+                            transport: {
+                                read: {
+                                    url: "@Html.Raw(Url.Action("BackInStockSubscriptionList", "Customer", new { customerId = Model.Id }))",
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: addAntiForgeryToken
+                                }
+                            },
+                            schema: {
+                                data: "Data",
+                                total: "Total",
+                                errors: "Errors"
+                            },
+                            error: function(e) {
+                                display_kendoui_grid_error(e);
+                                // Cancel the changes
+                                this.cancelChanges();
+                            },
+                            pageSize: @(defaultGridPageSize),
+                            serverPaging: true,
+                            serverFiltering: true,
+                            serverSorting: true
+                        },
+                        pageable: {
+                            refresh: true,
+                            pageSizes: [@(gridPageSizes)],
+                            @await Html.PartialAsync("_GridPagerMessages")
+                        },
+                        editable: {
+                            confirmation: "@T("Merchant.Common.DeleteConfirmation")",
+                            mode: "inline"
+                        },
+                        scrollable: false,
+                        columns: [{
+                            field: "StoreName",
+                            hidden: @(stores.Count > 1 ? "false" : "true"),
+                            title: "@T("Merchant.Customers.Customers.BackInStockSubscriptions.Store")",
+                            width: 200,
+                        }, {
+                            field: "ProductId",
+                            title: "@T("Merchant.Customers.Customers.BackInStockSubscriptions.Product")",
+                            width: 300,
+                            template: '<a href="@Url.Content("~/Merchant/Product/Edit/")#=ProductId#">#:ProductName#</a>'
+                        },{
+                            field: "CreatedOn",
+                            title: "@T("Merchant.Customers.Customers.BackInStockSubscriptions.CreatedOn")",
+                            width: 200,
+                            type: "date",
+                            format: "{0:G}"
+                        }]
+                    });
+                });
+            </script>
+        </div>
+    </div>
+    @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.CustomerDetailsBackInStockBottom, additionalData = Model })
+</div>

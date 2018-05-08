@@ -1,0 +1,56 @@
+﻿@using Nop.Core.Infrastructure;
+@using Nop.Core;
+@using Nop.Core.Domain.Customers;
+@using Nop.Services.Common;
+
+
+<div class="header">
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderBefore })
+    <div class="header-upper">
+        <div class="header-selectors-wrapper">
+            @await Component.InvokeAsync("TaxTypeSelector")
+            @await Component.InvokeAsync("CurrencySelector")
+            @await Component.InvokeAsync("LanguageSelector")
+            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderSelectors })
+        </div>
+        @*<div class="header-links-wrapper">
+            @await Component.InvokeAsync("HeaderLinks")
+            @await Component.InvokeAsync("FlyoutShoppingCart")
+        </div>*@
+        <div class="header-links-wrapper">
+
+            @{
+                var currentCustomer = EngineContext.Current.Resolve<IWorkContext>().CurrentCustomer;
+
+                if (!currentCustomer.IsGuest())
+                {
+                    var firstname = currentCustomer.GetAttribute<string>(SystemCustomerAttributeNames.FirstName);
+                    var secondname = currentCustomer.GetAttribute<string>(SystemCustomerAttributeNames.LastName);
+                    var name = firstname + " "+ secondname;
+
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                <br />
+                <h3 style="color:green">Hello @name, how are you today?</h3>
+                <br />
+            }
+                }
+
+            }
+            @await Component.InvokeAsync("HeaderLinks")
+            @await Component.InvokeAsync("FlyoutShoppingCart")
+            @*@Html.Action("HeaderLinks", "Common")
+        @Html.Action("FlyoutShoppingCart", "ShoppingCart")*@
+        </div>
+    </div>
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderMiddle })
+    <div class="header-lower">
+        <div class="header-logo">
+            @await Component.InvokeAsync("Logo")
+        </div>
+        <div class="search-box store-search-box">
+            @await Component.InvokeAsync("SearchBox")
+        </div>
+    </div>
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderAfter })
+</div>

@@ -1,0 +1,31 @@
+@model AffiliateModel
+@{
+    //page title
+    ViewBag.Title = T("Merchant.Affiliates.AddNew").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Affiliates");
+}
+
+<form asp-controller="Affiliate" asp-action="Create" method="post">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Merchant.Affiliates.AddNew")
+            <small>
+                <i class="fa fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Merchant.Affiliates.BackToList")</a>
+            </small>
+        </h1>
+        <div class="pull-right">
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Merchant.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Merchant.Common.SaveContinue")
+            </button>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.AffiliateDetailsButtons })
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>

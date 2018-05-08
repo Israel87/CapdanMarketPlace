@@ -1,0 +1,78 @@
+﻿@model DashboardModel
+@inject IPermissionService permissionService
+@using Nop.Services.Security
+@{
+    Html.AppendCssFileParts("~/lib/ionicons/css/ionicons-2.0.1.min.css");
+
+    //page title
+    ViewBag.Title = T("Merchant.Dashboard").Text;
+
+    //var canManageOrders = permissionService.Authorize(StandardPermissionProvider.ManageOrders);
+    //var canManageCustomers = permissionService.Authorize(StandardPermissionProvider.ManageCustomers);
+    //var canManageProducts = permissionService.Authorize(StandardPermissionProvider.ManageProducts);
+    //var canManageReturnRequests = permissionService.Authorize(StandardPermissionProvider.ManageReturnRequests);
+}
+<nop-antiforgery-token />
+<div class="content-header">
+    <h1>
+        @T("Merchant.Dashboard")
+    </h1>
+</div>
+<div class="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = AdminWidgetZones.DashboardTop })
+            @if (!Model.IsLoggedInAsVendor)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                @await Component.InvokeAsync("NopCommerceMerchantNews")
+            </div>
+        </div>
+}
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = AdminWidgetZones.DashboardNewsAfter })
+            <div class="row">
+                <div class="col-md-12">
+                    @await Component.InvokeAsync("MerchantCommonStatistics")
+                </div>
+            </div>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = AdminWidgetZones.DashboardCommonstatisticsAfter })
+            <div class="row">
+                <div class="col-md-6">
+                    @await Html.PartialAsync("_OrderStatistics")
+                </div>
+
+            </div>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = AdminWidgetZones.DashboardCustomerorderchartsAfter })
+            <div class="row">
+                <div class="col-md-8">
+                    @await Html.PartialAsync("_OrderAverageReport")
+                </div>
+                <div class="col-md-4">
+                    @await Html.PartialAsync("_OrderIncompleteReport")
+                </div>
+            </div>
+
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = AdminWidgetZones.DashboardOrderreportsAfter })
+            <div class="row">
+                <div class="col-md-8">
+                    @await Html.PartialAsync("_LatestOrders")
+                </div>
+                <div class="col-md-4">
+                    @await Html.PartialAsync("_PopularSearchTermsReport")
+                </div>
+            </div>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = AdminWidgetZones.DashboardLatestordersSearchtermsAfter })
+            <div class="row">
+                <div class="col-md-6">
+                    @await Html.PartialAsync("_BestsellersBriefReportByQuantity")
+                </div>
+                <div class="col-md-6">
+                    @await Html.PartialAsync("_BestsellersBriefReportByAmount")
+                </div>
+            </div>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = AdminWidgetZones.DashboardBottom })
+        </div>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+@model StateProvinceModel
+
+@{
+    Layout = "_MerchantPopupLayout";
+
+    //page title
+    ViewBag.Title = T("Merchant.Configuration.Countries.States.EditStateDetails").Text;
+}
+
+<form asp-controller="Country" asp-action="StateEditPopup"
+      asp-route-btnId="@Context.Request.Query["btnId"]"
+      asp-route-formId="@Context.Request.Query["formId"]">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Merchant.Configuration.Countries.States.EditStateDetails")
+        </h1>
+        <div class="pull-right">
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Merchant.Common.Save")
+            </button>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.CountryStateDetailsButtons, additionalData = Model })
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdateState", Model)
+</form>

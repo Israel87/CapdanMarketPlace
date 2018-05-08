@@ -1,0 +1,22 @@
+﻿@model Nop.Web.Models.Customer.MerchantProducts
+@{
+    var productDetailList = ViewBag.ProductDetails;
+    Layout = "_ColumnsTwo";
+    ViewData["Title"] = "MerchantStore";
+
+}
+
+<h2>MerchantStore</h2>
+
+<div class="container">
+    <div class="">
+        @Model.DisplayOrder
+        <br/>
+        @Model.FullDescription
+        <br/>
+        @Model.Name
+        <br/>
+        @Model.Price
+    </div>
+</div>
+

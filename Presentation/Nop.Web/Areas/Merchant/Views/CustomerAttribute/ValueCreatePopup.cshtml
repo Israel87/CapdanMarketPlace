@@ -1,0 +1,27 @@
+@model CustomerAttributeValueModel
+
+@{
+    Layout = "_MerchantPopupLayout";
+
+    //page title
+    ViewBag.Title = T("Merchant.Customers.CustomerAttributes.Values.AddNew").Text;
+}
+
+<form asp-controller="CustomerAttribute" asp-action="ValueCreatePopup"
+      asp-route-customerAttributeId="@Context.Request.Query["customerAttributeId"]"
+      asp-route-btnId="@Context.Request.Query["btnId"]"
+      asp-route-formId="@Context.Request.Query["formId"]">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Merchant.Customers.CustomerAttributes.Values.AddNew")
+        </h1>
+        <div class="pull-right">
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Merchant.Common.Save")
+            </button>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.CustomerAttributeValueDetailsButtons })
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdateValue", Model)
+</form>

@@ -1,0 +1,119 @@
+@model DiscountModel
+@inject MerchantAreaSettings MerchantAreaSettings
+@{
+    var defaultGridPageSize = MerchantAreaSettings.DefaultGridPageSize;
+    var gridPageSizes = MerchantAreaSettings.GridPageSizes;
+}
+
+<div class="panel-group">
+    @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.DiscountDetailsAppliedToManufacturersTop, additionalData = Model })
+    <div class="panel panel-default">
+        @if (Model.Id > 0)
+        {
+            <div class="panel-body">
+                <div id="manufacturers-grid"></div>
+
+                <script>
+                    $(document).ready(function() {
+                        $("#manufacturers-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("ManufacturerList", "Discount", new {discountId = Model.Id}))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    },
+                                    destroy: {
+                                        url: "@Html.Raw(Url.Action("ManufacturerDelete", "Discount", new {discountId = Model.Id}))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: addAntiForgeryToken
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors",
+                                    model: {
+                                        id: "ManufacturerId",
+                                        fields: {
+                                            ManufacturerName: { editable: false, type: "string" },
+                                            ManufacturerId: { editable: false, type: "number" }
+                                        }
+                                    }
+                                },
+                                error: function(e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                pageSize: @(defaultGridPageSize),
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            },
+                            pageable: {
+                                refresh: true,
+                                pageSizes: [@(gridPageSizes)],
+                                @await Html.PartialAsync("_GridPagerMessages")
+                            },
+                            editable: {
+                                confirmation: "@T("Merchant.Common.DeleteConfirmation")",
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            columns: [
+                                {
+                                    field: "ManufacturerName",
+                                    title: "@T("Merchant.Promotions.Discounts.AppliedToManufacturers.Manufacturer")"
+                                }, {
+                                    field: "ManufacturerId",
+                                    title: "@T("Merchant.Common.View")",
+                                    width: 150,
+                                    headerAttributes: { style: "text-align:center" },
+                                    attributes: { style: "text-align:center" },
+                                    template: '<a class="btn btn-default" href="@Url.Content("~/Merchant/Manufacturer/Edit/")#=ManufacturerId#"><i class="fa fa-eye"></i>@T("Merchant.Common.View")</a>'
+                                }, {
+                                    command: [
+                                        {
+                                            name: "destroy",
+                                            text: "@T("Merchant.Common.Delete")"
+                                        }
+                                    ],
+                                    width: 150
+                                }
+                            ]
+                        });
+                    });
+                </script>
+            </div>
+            <div class="panel-footer">
+                <button type="submit" id="btnAddNewManufacturer" onclick="javascript:OpenWindow('@(Url.Action("ManufacturerAddPopup", "Discount", new {discountId = Model.Id, btnId = "btnRefreshManufacturers", formId = "discount-form"}))', 800, 800, true); return false;" class="btn btn-primary">
+                    @T("Merchant.Promotions.Discounts.AppliedToManufacturers.AddNew")
+                </button>
+                <input type="submit" id="btnRefreshManufacturers" style="display: none" />
+                <script>
+                    $(document).ready(function() {
+                        $('#btnRefreshManufacturers').click(function() {
+                            //refresh grid
+                            var grid = $("#manufacturers-grid").data('kendoGrid');
+                            grid.dataSource.read();
+
+                            //return false to don't reload a page
+                            return false;
+                        });
+                    });
+                </script>
+            </div>
+        }
+        else
+        {
+            <div class="panel-body">
+                @T("Merchant.Promotions.Discounts.AppliedToManufacturers.SaveBeforeEdit")
+            </div>
+        }
+    </div>
+    @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.DiscountDetailsAppliedToManufacturersBottom, additionalData = Model })
+</div>

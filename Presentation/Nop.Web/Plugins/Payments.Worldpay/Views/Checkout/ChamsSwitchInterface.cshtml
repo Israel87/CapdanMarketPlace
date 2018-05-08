@@ -1,0 +1,47 @@
+﻿@model Nop.Web.Models.Order.PaymentGatewayDetailsModel
+
+@{
+    Layout = "_ColumnsOne";
+    //scripts
+    // Html.AddScriptParts(ResourceLocation.Footer, "https://api.ravepay.co/flwv3-pug/getpaidx/api/flwpbf-inline.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/flwpbf-inline.js");
+    
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/jquery-1.11.1.min.js");
+    Html.AddScriptParts(ResourceLocation.Footer, "~/js/public.chamsswitchpayment.js");
+
+
+    //var hidePaymentDetails = ViewBag.getPaymentDetails;
+}
+@*@inject Nop.Core.IWebHelper _webHelper
+
+@await Component.InvokeAsync("StoreScopeConfiguration")*@
+<form asp-controller="" asp-action="Configure" method="post">
+
+    @*hold the values of the payment details in hidden form*@
+   
+    <div class="container">
+        <br />
+        <center>
+            <h3> Proceed to make payment</h3><br />
+
+            @{
+                <div hidden id="modelAmount">@Model.Amount</div>
+                <div hidden id="modelCustomerID">@Model.CustomerID</div>
+                <div hidden id="modelOrderGUID">@Model.OrderGUID</div>
+                <div hidden id="modelDescription">@Model.Description</div>
+                <div hidden id="modelEmail">@Model.Email</div>
+                <div hidden id="modelFirstName">@Model.FirstName</div>
+                <div hidden id="modelLastName">@Model.LastName</div>
+                <div hidden id="modelStatus">@Model.Status</div>
+                <div hidden id="modelPhoneNumber">@Model.PhoneNumber</div>
+
+                <img src="~/images/chamslogo.png" id="img" alt="paymentLogo" />
+
+            }
+            <hr /><br /><br />
+            <input type="button" onclick="redirect.makePayment();" style="width:300px; height:50px; background-color:  #33b2ff; color:white; font-weight:bolder" value="CLICK TO PAY" />
+        </center>
+
+    </div>
+
+</form>

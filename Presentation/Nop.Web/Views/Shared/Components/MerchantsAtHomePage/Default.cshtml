@@ -1,0 +1,116 @@
+﻿@model IList<Nop.Core.Domain.Customers.CustomerMerchant>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var merchantName = ViewBag.MerchantName;
+    var counter = 1;
+}
+@*<div class="page manufacturer-list-page">
+        <div class="page-title">
+            <h1>Featured Merchants</h1>
+        </div>
+        <div class="page-body">
+            <div class="manufacturer-grid">
+                <div class="item-grid">
+                    @foreach (var item in merchantName)
+                    {
+                        <div class="item-box">
+                            <div class="manufacturer-item">
+                                <h2 class="title">
+                                    <a href="#">
+                                        @item
+                                    </a>
+                                </h2>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>*@
+
+<div class="product-grid home-page-product-grid">
+    <div class="title">
+        <strong>Featured merchants</strong>
+    </div>
+    <div class="item-grid">
+        @foreach (var item in Model)
+        {
+            var hosturl = HttpContextAccessor.HttpContext.Request.Host + "/MerchantStore/Index?civn=" + item.CIVN.Trim().ToLower();
+
+        <div class="item-box">
+            <div class="product-item" data-productid="1">
+                <div class="picture">
+                    <a target="_blank" href=http:// + @hosturl title="Show details for Build your own computer">
+                        <img alt="Picture of Build your own computer" src="~/images/thumbs/capdanlogo.png" title="Show details for Build your own computer">
+                    </a>
+                </div>
+                <div class="details">
+                    <h2 class="product-title">
+                        <center>
+                            <a target="_blank" href=http://@hosturl>@item.SystemName</a>
+                        </center>
+                    </h2>
+                </div>
+            </div>
+
+        </div>
+    counter++;
+}
+
+    </div>
+</div>
+
+@*Featured category*@
+<div class="product-grid home-page-product-grid">
+    <div class="title">
+        <strong>Featured categories</strong>
+    </div>
+</div>
+<div class="category-grid home-page-category-grid">
+    <div class="item-grid">
+        <div class="item-box">
+            <div class="category-item">
+                <h2 class="title">
+                    <a href="#" title="Show products in category Electronics">
+                        Laptops
+                    </a>
+                </h2>
+                <div class="picture">
+                    <a href="#" title="Show products in category Electronics">
+                        <img alt="Picture for category Electronics" src="/images/thumbs/laptop.jpeg" title="Show products in category Electronics">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="item-box">
+            <div class="category-item">
+                <h2 class="title">
+                    <a href="#" title="Show products in category Apparel">
+                        Phones
+                    </a>
+                </h2>
+                <div class="picture">
+                    <a href="#" title="Show products in category Apparel">
+                        <img alt="Picture for Phones" src="/images/thumbs/phones.jpeg" title="Show products in category Electronics">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="item-box">
+            <div class="category-item">
+                <h2 class="title">
+                    <a href="#" title="Show products in category Digital downloads">
+                        Accesories
+                    </a>
+                </h2>
+                <div class="picture">
+                    <a href="#" title="Show products in category Digital downloads">
+                        <img alt="Picture for category Digital downloads" src="~/images/thumbs/accessories.jpg" title="Show products in category Digital downloads">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

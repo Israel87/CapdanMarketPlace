@@ -1,0 +1,41 @@
+@model QueuedEmailModel
+
+@{
+    //page title
+    ViewBag.Title = T("Merchant.System.QueuedEmails.EditQueuedEmailDetails").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Queued emails");
+}
+
+<form asp-controller="QueuedEmail" asp-action="Edit" method="post">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Merchant.System.QueuedEmails.EditQueuedEmailDetails")
+            <small>
+                <i class="fa fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Merchant.System.QueuedEmails.BackToList")</a>
+            </small>
+        </h1>
+        <div class="pull-right">
+            <button type="submit" name="requeue" class="btn bg-green">
+                <i class="fa fa-clone"></i>
+                @T("Merchant.System.QueuedEmails.Requeue")
+            </button>
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Merchant.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Merchant.Common.SaveContinue")
+            </button>
+            <span id="queuedEmail-delete" class="btn bg-red">
+                <i class="fa fa-trash-o"></i>
+                @T("Merchant.Common.Delete")
+            </span>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.QueuedEmailDetailsButtons, additionalData = Model })
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>
+<nop-delete-confirmation asp-model-id="@Model.Id" asp-button-id="queuedEmail-delete" />

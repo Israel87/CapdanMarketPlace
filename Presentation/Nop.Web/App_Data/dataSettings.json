@@ -1,0 +1,5 @@
+{
+  "DataProvider": "sqlserver",
+  "DataConnectionString": "Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=CAPDAN;Integrated Security=True;Persist Security Info=False",
+  "RawDataSettings": {}
+}

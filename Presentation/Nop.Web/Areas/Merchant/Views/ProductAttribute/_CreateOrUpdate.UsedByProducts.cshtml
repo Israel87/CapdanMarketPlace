@@ -1,0 +1,82 @@
+@model ProductAttributeModel
+@inject MerchantAreaSettings MerchantAreaSettings
+
+@{
+    var defaultGridPageSize = MerchantAreaSettings.DefaultGridPageSize;
+    var gridPageSizes = MerchantAreaSettings.GridPageSizes;
+}
+
+<div class="panel-group">
+    @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.ProductAttributeDetailsUsedByProductsTop, additionalData = Model })
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <p>
+                @T("Merchant.Catalog.Attributes.ProductAttributes.UsedByProducts.Hint")
+            </p>
+            <div id="used-by-products-grid"></div>
+
+            <script>
+                $(document).ready(function () {
+                    $("#used-by-products-grid").kendoGrid({
+                        dataSource: {
+                            type: "json",
+                            transport: {
+                                read: {
+                                    url: "@Html.Raw(Url.Action("UsedByProducts", "ProductAttribute", new { productAttributeId = Model.Id }))",
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: addAntiForgeryToken
+                                }
+                            },
+                            schema: {
+                                data: "Data",
+                                total: "Total",
+                                errors: "Errors"
+                            },
+                            error: function(e) {
+                                display_kendoui_grid_error(e);
+                                // Cancel the changes
+                                this.cancelChanges();
+                            },
+                            pageSize: @(defaultGridPageSize),
+                            serverPaging: true,
+                            serverFiltering: true,
+                            serverSorting: true
+                        },
+                        pageable: {
+                            refresh: true,
+                            pageSizes: [@(gridPageSizes)],
+                            @await Html.PartialAsync("_GridPagerMessages")
+                        },
+                        editable: {
+                            confirmation: "@T("Merchant.Common.DeleteConfirmation")",
+                            mode: "inline"
+                        },
+                        scrollable: false,
+                        columns: [{
+                                field: "ProductName",
+                                title: "@T("Merchant.Catalog.Attributes.ProductAttributes.UsedByProducts.Product")",
+                                width: 400
+                            }, {
+                                field: "Published",
+                                title: "@T("Merchant.Catalog.Attributes.ProductAttributes.UsedByProducts.Published")",
+                                width: 100,
+                                headerAttributes: { style: "text-align:center" },
+                                attributes: { style: "text-align:center" },
+                                template: '# if(Published) {# <i class="fa fa-check true-icon"></i> #} else {# <i class="fa fa-close false-icon"></i> #} #'
+                            },
+                            {
+                                field: "Id",
+                                title: "@T("Merchant.Common.View")",
+                                width: 100,
+                                headerAttributes: { style: "text-align:center" },
+                                attributes: { style: "text-align:center" },
+                                template: '<a class="btn btn-default" href="@Url.Content("~/Merchant/Product/Edit/")#=Id#"><i class="fa fa-eye"></i>@T("Merchant.Common.View")</a>'
+                            }]
+                    });
+                });
+            </script>
+        </div>
+    </div>
+    @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.ProductAttributeDetailsUsedByProductsBottom, additionalData = Model })
+</div>

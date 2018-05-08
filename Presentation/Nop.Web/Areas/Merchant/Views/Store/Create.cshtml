@@ -1,0 +1,32 @@
+@model StoreModel
+
+@{
+    //page title
+    ViewBag.Title = T("Merchant.Configuration.Stores.AddNew").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Stores");
+}
+
+<form asp-controller="Store" asp-action="Create" method="post">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Merchant.Configuration.Stores.AddNew")
+            <small>
+                <i class="fa fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Merchant.Configuration.Stores.BackToList")</a>
+            </small>
+        </h1>
+        <div class="pull-right">
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Merchant.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Merchant.Common.SaveContinue")
+            </button>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.StoreDetailsButtons })
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>

@@ -1,0 +1,132 @@
+@inject MerchantAreaSettings MerchantAreaSettings
+
+@{
+    var defaultGridPageSize = MerchantAreaSettings.DefaultGridPageSize;
+    var gridPageSizes = MerchantAreaSettings.GridPageSizes;
+
+    //page title
+    ViewBag.Title = T("Merchant.RecurringPayments").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Recurring payments");
+}
+
+<nop-antiforgery-token />
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @T("Merchant.RecurringPayments")
+    </h1>
+    <div class="pull-right">
+        &nbsp;
+        @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.ReccuringPaymentListButtons })
+    </div>
+</div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>
+                        @T("Merchant.RecurringPayments.Description")
+                    </p>
+                    <div id="recurringpayments-grid"></div>
+
+                    <script>
+                        $(document).ready(function() {
+                            $("#recurringpayments-grid").kendoGrid({
+                                dataSource: {
+                                    type: "json",
+                                    transport: {
+                                        read: {
+                                            url: "@Html.Raw(Url.Action("List", "RecurringPayment"))",
+                                            type: "POST",
+                                            dataType: "json",
+                                            data: addAntiForgeryToken
+                                        }
+                                    },
+                                    schema: {
+                                        data: "Data",
+                                        total: "Total",
+                                        errors: "Errors"
+                                    },
+                                    error: function(e) {
+                                        display_kendoui_grid_error(e);
+                                        // Cancel the changes
+                                        this.cancelChanges();
+                                    },
+                                    pageSize: @(defaultGridPageSize),
+                                    serverPaging: true,
+                                    serverFiltering: true,
+                                    serverSorting: true
+                                },
+                                pageable: {
+                                    refresh: true,
+                                    pageSizes: [@(gridPageSizes)],
+                                    @await Html.PartialAsync("_GridPagerMessages")
+                                },
+                                editable: {
+                                    confirmation: "@T("Merchant.Common.DeleteConfirmation")",
+                                    mode: "inline"
+                                },
+                                scrollable: false,
+                                columns: [
+                                    {
+                                        field: "Id",
+                                        title: "@T("Merchant.RecurringPayments.Fields.ID")",
+                                        width: 50
+                                    }, {
+                                        field: "CustomerId",
+                                        title: "@T("Merchant.RecurringPayments.Fields.Customer")",
+                                        width: 200,
+                                        template: '<a href="@Url.Content("~/Merchant/Customer/Edit/")#=CustomerId#">#:CustomerEmail#</a>'
+                                    }, {
+                                        field: "CycleLength",
+                                        title: "@T("Merchant.RecurringPayments.Fields.CycleLength")",
+                                        width: 100
+                                    }, {
+                                        field: "CyclePeriodStr",
+                                        title: "@T("Merchant.RecurringPayments.Fields.CyclePeriod")",
+                                        width: 100
+                                    }, {
+                                        field: "IsActive",
+                                        title: "@T("Merchant.RecurringPayments.Fields.IsActive")",
+                                        width: 100,
+                                        headerAttributes: { style: "text-align:center" },
+                                        attributes: { style: "text-align:center" },
+                                        template: '# if(IsActive) {# <i class="fa fa-check true-icon"></i> #} else {# <i class="fa fa-close false-icon"></i> #} #'
+                                    }, {
+                                        field: "StartDate",
+                                        title: "@T("Merchant.RecurringPayments.Fields.StartDate")",
+                                        width: 200,
+                                        type: "date",
+                                        format: "{0:G}"
+                                    }, {
+                                        field: "NextPaymentDate",
+                                        title: "@T("Merchant.RecurringPayments.Fields.NextPaymentDate")",
+                                        width: 200,
+                                        type: "date",
+                                        format: "{0:G}"
+                                    }, {
+                                        field: "TotalCycles",
+                                        title: "@T("Merchant.RecurringPayments.Fields.TotalCycles")",
+                                        width: 100
+                                    }, {
+                                        field: "CyclesRemaining",
+                                        title: "@T("Merchant.RecurringPayments.Fields.CyclesRemaining")",
+                                        width: 100
+                                    }, {
+                                        field: "Id",
+                                        title: "@T("Merchant.Common.Edit")",
+                                        width: 100,
+                                        headerAttributes: { style: "text-align:center" },
+                                        attributes: { style: "text-align:center" },
+                                        template: '<a class="btn btn-default" href="Edit/#=Id#"><i class="fa fa-pencil"></i>@T("Merchant.Common.Edit")</a>'                                    }
+                                ]
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

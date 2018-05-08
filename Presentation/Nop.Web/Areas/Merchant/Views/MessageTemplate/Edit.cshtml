@@ -1,0 +1,43 @@
+@model MessageTemplateModel
+
+@{
+    //page title
+    ViewBag.Title = T("Merchant.ContentManagement.MessageTemplates.EditMessageTemplateDetails").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Message templates");
+}
+
+<form asp-controller="MessageTemplate" asp-action="Edit" method="post">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Merchant.ContentManagement.MessageTemplates.EditMessageTemplateDetails") - @Model.Name
+            <small>
+                <i class="fa fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Merchant.ContentManagement.MessageTemplates.BackToList")</a>
+            </small>
+        </h1>
+        <div class="pull-right">
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Merchant.Common.Save")
+            </button>
+
+            <button type="submit" name="save-continue" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Merchant.Common.SaveContinue")
+            </button>
+
+            <button type="submit" id="message-template-copy" name="message-template-copy" class="btn bg-green">
+                <i class="fa fa-clone"></i>
+                @T("Merchant.ContentManagement.MessageTemplates.Copy")
+            </button>
+            <nop-action-confirmation asp-button-id="message-template-copy" />
+            <span id="message-template-delete" class="btn bg-red">
+                <i class="fa fa-trash-o"></i>
+                @T("Merchant.Common.Delete")
+            </span>
+            @await Component.InvokeAsync("MerchantWidget", new { widgetZone = MerchantWidgetZones.MessageTemplateDetailsButtons, additionalData = Model })
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>
